@@ -60,6 +60,7 @@ class defining_class_converter(CConverter):
     type = 'PyTypeObject *'
     format_unit = ''
     show_in_signature = False
+    specified_type: str | None = None
 
     def converter_init(self, *, type: str | None = None) -> None:
         self.specified_type = type
@@ -1126,6 +1127,7 @@ class self_converter(CConverter):
     """
     type: str | None = None
     format_unit = ''
+    specified_type: str | None = None
 
     def converter_init(self, *, type: str | None = None) -> None:
         self.specified_type = type
@@ -1182,10 +1184,8 @@ class self_converter(CConverter):
     @property
     def parser_type(self) -> str:
         assert self.type is not None
-        if self.function.kind in {METHOD_INIT, METHOD_NEW, STATIC_METHOD, CLASS_METHOD}:
-            tp, _ = correct_name_for_self(self.function)
-            return tp
-        return self.type
+        tp, _ = correct_name_for_self(self.function)
+        return tp
 
     def render(self, parameter: Parameter, data: CRenderData) -> None:
         """
